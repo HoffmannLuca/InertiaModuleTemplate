@@ -11,7 +11,7 @@ it('exposes the status endpoint', function (): void {
 it('exposes the inertia web page', function (): void {
     $this->get('/aaa-module-template-zzz', ['X-Inertia' => 'true'])
         ->assertOk()
-        ->assertJsonPath('component', 'AAAModuleTemplateZZZ/Index')
+        ->assertJsonPath('component', 'AaaModuleTemplateZzz/Index')
         ->assertJsonPath('props.module.name', 'aaa-module-template-zzz');
 });
 

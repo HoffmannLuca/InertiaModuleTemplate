@@ -1,6 +1,6 @@
 <?php
 
-use AAAModuleTemplateZZZ\Http\Controllers\PageController;
+use AaaModuleTemplateZzz\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
 
 if (config('aaa_module_template_zzz.web.enabled', true)) {

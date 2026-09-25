@@ -1,15 +1,15 @@
 <?php
 
-namespace AAAModuleTemplateZZZ\Tests;
+namespace AaaModuleTemplateZzz\Tests;
 
-use AAAModuleTemplateZZZ\AAAModuleTemplateZZZServiceProvider;
+use AaaModuleTemplateZzz\AaaModuleTemplateZzzServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 abstract class TestCase extends Orchestra
 {
     protected function getPackageProviders($app): array
     {
-        return [AAAModuleTemplateZZZServiceProvider::class];
+        return [AaaModuleTemplateZzzServiceProvider::class];
     }
 
     protected function defineEnvironment($app): void

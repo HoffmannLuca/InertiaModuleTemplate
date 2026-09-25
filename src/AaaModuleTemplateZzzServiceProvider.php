@@ -1,10 +1,10 @@
 <?php
 
-namespace AAAModuleTemplateZZZ;
+namespace AaaModuleTemplateZzz;
 
 use Illuminate\Support\ServiceProvider;
 
-class AAAModuleTemplateZZZServiceProvider extends ServiceProvider
+class AaaModuleTemplateZzzServiceProvider extends ServiceProvider
 {
     public function register(): void
     {

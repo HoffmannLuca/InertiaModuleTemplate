@@ -1,7 +1,7 @@
 import { readonly, ref } from 'vue'
 import type { ModuleClientOptions, ModuleResponse, ModuleStatus } from './types'
 
-export function useAAAModuleTemplateZZZ(options: ModuleClientOptions = {}) {
+export function useAaaModuleTemplateZzz(options: ModuleClientOptions = {}) {
   const data = ref<ModuleStatus | null>(null)
   const error = ref<Error | null>(null)
   const loading = ref(false)

@@ -26,12 +26,12 @@
     },
     "autoload": {
         "psr-4": {
-            "AAAModuleTemplateZZZ\\": "src/"
+            "AaaModuleTemplateZzz\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "AAAModuleTemplateZZZ\\Tests\\": "tests/"
+            "AaaModuleTemplateZzz\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -41,7 +41,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "AAAModuleTemplateZZZ\\AAAModuleTemplateZZZServiceProvider"
+                "AaaModuleTemplateZzz\\AaaModuleTemplateZzzServiceProvider"
             ]
         }
     },

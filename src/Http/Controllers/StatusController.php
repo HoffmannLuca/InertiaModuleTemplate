@@ -1,6 +1,6 @@
 <?php
 
-namespace AAAModuleTemplateZZZ\Http\Controllers;
+namespace AaaModuleTemplateZzz\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 

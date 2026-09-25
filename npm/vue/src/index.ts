@@ -1,4 +1,4 @@
-export { useAAAModuleTemplateZZZ } from './useAAAModuleTemplateZZZ'
+export { useAaaModuleTemplateZzz } from './useAaaModuleTemplateZzz'
 export type {
   ModuleClientOptions,
   ModuleResponse,

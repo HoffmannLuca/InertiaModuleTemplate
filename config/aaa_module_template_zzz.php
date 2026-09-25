@@ -13,6 +13,6 @@ return [
         'enabled' => true,
         'prefix' => env('AAA_MODULE_TEMPLATE_ZZZ_WEB_ROUTE_PREFIX', 'aaa-module-template-zzz'),
         'middleware' => ['web'],
-        'component' => 'AAAModuleTemplateZZZ/Index',
+        'component' => 'AaaModuleTemplateZzz/Index',
     ],
 ];

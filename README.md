@@ -1,4 +1,4 @@
-# AAAModuleTemplateZZZ
+# AaaModuleTemplateZzz
 
 A template repository for a Laravel module with a separately installed,
 headless Vue package. The PHP package owns backend behavior, routes, config,
@@ -12,9 +12,25 @@ Replace the placeholders consistently when creating a module:
 | Context | Placeholder |
 | --- | --- |
 | Composer/package slug | `aaa-module-template-zzz` |
-| PHP namespace/classes | `AAAModuleTemplateZZZ` |
+| PHP namespace/classes | `AaaModuleTemplateZzz` |
+| Human-readable name | `Aaa Module Template Zzz` |
 | Config/database keys | `aaa_module_template_zzz` |
+| Environment variables | `AAA_MODULE_TEMPLATE_ZZZ` |
 | npm package | `@aaa-module-template-zzz/vue` |
+
+Create a renamed copy in `build/` with:
+
+```bash
+./create.sh customer-portal
+```
+
+This creates `build/customer-portal` and replaces all occurrences and file
+names using `customer-portal`, `customer_portal`, and `CustomerPortal`. Existing
+human-readable names become `Customer Portal` and environment-variable prefixes
+become `CUSTOMER_PORTAL`. Existing targets are never overwritten. Installed
+dependencies, Git metadata, generated
+frontend files, and the template's `composer.lock` are not copied. Run
+`composer install` in the generated package to create its own valid lock file.
 
 ## Backend installation
 
@@ -23,7 +39,7 @@ composer require aaa-module-template-zzz/aaa-module-template-zzz
 php artisan migrate
 ```
 
-Laravel discovers `AAAModuleTemplateZZZServiceProvider` automatically. The
+Laravel discovers `AaaModuleTemplateZzzServiceProvider` automatically. The
 provider merges the package config, loads routes, migrations and translations,
 and exposes optional publish groups:
 
@@ -41,7 +57,7 @@ GET /aaa-module-template-zzz
 ```
 
 The web route renders the configurable Inertia component
-`AAAModuleTemplateZZZ/Index`. Register that page name in the consuming app's
+`AaaModuleTemplateZzz/Index`. Register that page name in the consuming app's
 Inertia page resolver. Both route stacks can be configured or disabled
 independently through `aaa_module_template_zzz.php`.
 
@@ -63,9 +79,9 @@ Use the headless composable in any Vue or Inertia Vue component:
 ```vue
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { useAAAModuleTemplateZZZ } from '@aaa-module-template-zzz/vue'
+import { useAaaModuleTemplateZzz } from '@aaa-module-template-zzz/vue'
 
-const { data, error, loading, fetchStatus } = useAAAModuleTemplateZZZ()
+const { data, error, loading, fetchStatus } = useAaaModuleTemplateZzz()
 
 onMounted(fetchStatus)
 </script>

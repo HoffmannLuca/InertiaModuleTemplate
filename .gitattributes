@@ -1,5 +1,7 @@
 # Keep the Composer/Packagist distribution focused on the PHP package.
 /npm export-ignore
+/build export-ignore
+/create.sh export-ignore
 /composer.lock export-ignore
 /.github export-ignore
 /tests export-ignore

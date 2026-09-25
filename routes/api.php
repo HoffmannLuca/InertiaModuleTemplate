@@ -1,6 +1,6 @@
 <?php
 
-use AAAModuleTemplateZZZ\Http\Controllers\StatusController;
+use AaaModuleTemplateZzz\Http\Controllers\StatusController;
 use Illuminate\Support\Facades\Route;
 
 if (config('aaa_module_template_zzz.api.enabled', true)) {

@@ -2,6 +2,7 @@
 /.phpunit.cache
 /.phpunit.result.cache
 /.vscode
+/build
 /npm/vue/dist
 /npm/vue/node_modules
 /vendor
