@@ -1,0 +1,8 @@
+# Keep the Composer/Packagist distribution focused on the PHP package.
+/npm export-ignore
+/composer.lock export-ignore
+/.github export-ignore
+/tests export-ignore
+/.editorconfig export-ignore
+/.gitignore export-ignore
+/phpunit.xml.dist export-ignore

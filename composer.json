@@ -1,0 +1,57 @@
+{
+    "name": "aaa-module-template-zzz/aaa-module-template-zzz",
+    "description": "Template for a Laravel module with a separately distributed headless Inertia Vue package.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "inertia",
+        "vue",
+        "module"
+    ],
+    "require": {
+        "php": "^8.2",
+        "illuminate/contracts": "^11.0|^12.0",
+        "illuminate/database": "^11.0|^12.0",
+        "illuminate/http": "^11.0|^12.0",
+        "illuminate/routing": "^11.0|^12.0",
+        "illuminate/support": "^11.0|^12.0",
+        "inertiajs/inertia-laravel": "^1.0|^2.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.18",
+        "orchestra/testbench": "^9.0|^10.0",
+        "pestphp/pest": "^3.8",
+        "pestphp/pest-plugin-laravel": "^3.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "AAAModuleTemplateZZZ\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AAAModuleTemplateZZZ\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "pest",
+        "lint": "pint --test"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "AAAModuleTemplateZZZ\\AAAModuleTemplateZZZServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true,
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

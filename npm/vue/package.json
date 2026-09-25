@@ -1,0 +1,42 @@
+{
+  "name": "@aaa-module-template-zzz/vue",
+  "version": "0.1.0",
+  "description": "Headless Vue composables for aaa-module-template-zzz.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "typecheck": "vue-tsc --noEmit",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "vue": "^3.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@vue/tsconfig": "^0.7.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vite": "^8.3.1",
+    "vitest": "^5.0.2",
+    "vue": "^3.4.0",
+    "vue-tsc": "^2.2.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
