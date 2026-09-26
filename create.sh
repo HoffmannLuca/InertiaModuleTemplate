@@ -161,10 +161,23 @@ PHP
 
 mv "$TARGET_DIR/ModuleREADME.md" "$TARGET_DIR/README.md"
 
+git -C "$TARGET_DIR" init
+git -C "$TARGET_DIR" add .
+git -C "$TARGET_DIR" commit --no-gpg-sign -m 'Initial commit'
+
+composer install --working-dir="$TARGET_DIR" --no-interaction
+npm --prefix "$TARGET_DIR/npm/vue" install
+
+git -C "$TARGET_DIR" add composer.lock npm/vue/package-lock.json
+
+if ! git -C "$TARGET_DIR" diff --cached --quiet; then
+    git -C "$TARGET_DIR" commit --amend --no-edit --no-gpg-sign
+fi
+
 echo "Created module template: $TARGET_DIR"
 echo "  slug:      $MODULE_KEBAB"
 echo "  scope:     $ORGANIZATION_KEBAB"
 echo "  namespace: $MODULE_PASCAL"
 echo "  title:     $MODULE_TITLE"
 echo "  snake:     $MODULE_SNAKE"
-echo 'Run composer install and npm install in npm/vue to install fresh dependencies.'
+echo 'Initialized Git repository, created initial commit, and installed dependencies.'

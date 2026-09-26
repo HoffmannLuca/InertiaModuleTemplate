@@ -35,8 +35,12 @@ become `CUSTOMER_PORTAL`. Existing targets are never overwritten. The generator
 itself, this repository's `README.md`, installed dependencies, Git metadata,
 generated frontend files, and the template's `composer.lock` are not copied.
 Instead, `ModuleREADME.md` is processed and renamed to `README.md` in the
-generated module. Run
-`composer install` in the generated package to create its own valid lock file.
+generated module. The generated directory is initialized as a fresh Git
+repository using the user's configured default branch, and all generated files
+are committed as `Initial commit`. Afterwards, Composer dependencies and the
+dependencies in `npm/vue` are installed. Composer creates a fresh lock file for
+the generated package during installation. Generated lock-file changes are
+added to the initial commit so that the new repository finishes clean.
 
 Organization input is normalized to a lowercase kebab-case scope. For example,
 `Acme GmbH` is accepted with a warning and used as `acme-gmbh`.
