@@ -21,10 +21,16 @@ fi
 
 readonly MODULE_KEBAB="$1"
 
-ORGANIZATION_KEBAB="${2:-}"
+ORGANIZATION_INPUT="${2:-}"
 
-if [[ -z "$ORGANIZATION_KEBAB" ]]; then
-    read -r -p 'Organization/scope: ' ORGANIZATION_KEBAB
+if [[ -z "$ORGANIZATION_INPUT" ]]; then
+    read -r -p 'Organization/scope: ' ORGANIZATION_INPUT
+fi
+
+ORGANIZATION_KEBAB="$(php -r '$value = strtolower(trim($argv[1])); $value = preg_replace("/[^a-z0-9]+/", "-", $value); echo trim($value, "-");' "$ORGANIZATION_INPUT")"
+
+if [[ "$ORGANIZATION_INPUT" != "$ORGANIZATION_KEBAB" ]]; then
+    echo "Warning: organization normalized from '$ORGANIZATION_INPUT' to '$ORGANIZATION_KEBAB'." >&2
 fi
 
 readonly ORGANIZATION_KEBAB
@@ -34,8 +40,8 @@ if [[ ! "$MODULE_KEBAB" =~ ^[a-z][a-z0-9]*(-[a-z0-9]+)*$ ]]; then
     exit 1
 fi
 
-if [[ ! "$ORGANIZATION_KEBAB" =~ ^[a-z][a-z0-9]*(-[a-z0-9]+)*$ ]]; then
-    echo 'Error: organization must be a lowercase kebab-case slug.' >&2
+if [[ -z "$ORGANIZATION_KEBAB" || ! "$ORGANIZATION_KEBAB" =~ ^[a-z][a-z0-9]*(-[a-z0-9]+)*$ ]]; then
+    echo 'Error: unable to derive a valid organization scope.' >&2
     exit 1
 fi
 

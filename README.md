@@ -36,6 +36,9 @@ dependencies, Git metadata, generated
 frontend files, and the template's `composer.lock` are not copied. Run
 `composer install` in the generated package to create its own valid lock file.
 
+Organization input is normalized to a lowercase kebab-case scope. For example,
+`Acme GmbH` is accepted with a warning and used as `acme-gmbh`.
+
 ## Backend installation
 
 ```bash
