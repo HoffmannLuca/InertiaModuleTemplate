@@ -14,6 +14,15 @@ usage() {
     echo "Example: ./create.sh customer-portal acme" >&2
 }
 
+confirm() {
+    local answer
+
+    read -r -p "$1 [Y/n] " answer
+    answer="$(printf '%s' "$answer" | tr '[:upper:]' '[:lower:]')"
+
+    [[ -z "$answer" || "$answer" == 'y' || "$answer" == 'yes' || "$answer" == 'j' || "$answer" == 'ja' ]]
+}
+
 if [[ $# -lt 1 || $# -gt 2 ]]; then
     usage
     exit 1
@@ -161,17 +170,28 @@ PHP
 
 mv "$TARGET_DIR/ModuleREADME.md" "$TARGET_DIR/README.md"
 
-git -C "$TARGET_DIR" init
-git -C "$TARGET_DIR" add .
-git -C "$TARGET_DIR" commit --no-gpg-sign -m 'Initial commit'
+INITIALIZED_GIT=false
+INSTALLED_DEPENDENCIES=false
 
-composer install --working-dir="$TARGET_DIR" --no-interaction
-npm --prefix "$TARGET_DIR/npm/vue" install
+if confirm 'Initialize a Git repository and create an initial commit?'; then
+    git -C "$TARGET_DIR" init
+    git -C "$TARGET_DIR" add .
+    git -C "$TARGET_DIR" commit --no-gpg-sign -m 'Initial commit'
+    INITIALIZED_GIT=true
+fi
 
-git -C "$TARGET_DIR" add composer.lock npm/vue/package-lock.json
+if confirm 'Run Composer and npm installs?'; then
+    composer install --working-dir="$TARGET_DIR" --no-interaction
+    npm --prefix "$TARGET_DIR/npm/vue" install
+    INSTALLED_DEPENDENCIES=true
+fi
 
-if ! git -C "$TARGET_DIR" diff --cached --quiet; then
-    git -C "$TARGET_DIR" commit --amend --no-edit --no-gpg-sign
+if [[ "$INITIALIZED_GIT" == true && "$INSTALLED_DEPENDENCIES" == true ]]; then
+    git -C "$TARGET_DIR" add composer.lock npm/vue/package-lock.json
+
+    if ! git -C "$TARGET_DIR" diff --cached --quiet; then
+        git -C "$TARGET_DIR" commit --amend --no-edit --no-gpg-sign
+    fi
 fi
 
 echo "Created module template: $TARGET_DIR"
@@ -180,4 +200,11 @@ echo "  scope:     $ORGANIZATION_KEBAB"
 echo "  namespace: $MODULE_PASCAL"
 echo "  title:     $MODULE_TITLE"
 echo "  snake:     $MODULE_SNAKE"
-echo 'Initialized Git repository, created initial commit, and installed dependencies.'
+
+if [[ "$INITIALIZED_GIT" == true ]]; then
+    echo 'Initialized Git repository and created initial commit.'
+fi
+
+if [[ "$INSTALLED_DEPENDENCIES" == true ]]; then
+    echo 'Installed Composer and npm dependencies.'
+fi
