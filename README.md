@@ -47,6 +47,12 @@ accepts the default `yes`; `n` or `no` skips an option.
 Organization input is normalized to a lowercase kebab-case scope. For example,
 `Acme GmbH` is accepted with a warning and used as `acme-gmbh`.
 
+Before the optional Git and installation steps, the generator asks for a
+license. Enter selects the default `1) MIT`; Apache-2.0, GPL-3.0-only, and a
+proprietary package are also available. The choice updates `LICENSE.md` and the
+Composer/npm package metadata. License templates live in `licenses/`; that
+directory itself is not copied into generated modules.
+
 ## Backend installation
 
 ```bash

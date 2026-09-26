@@ -23,6 +23,44 @@ confirm() {
     [[ -z "$answer" || "$answer" == 'y' || "$answer" == 'yes' || "$answer" == 'j' || "$answer" == 'ja' ]]
 }
 
+choose_license() {
+    local choice
+
+    echo 'Choose a license:'
+    echo '  1) MIT (default)'
+    echo '  2) Apache-2.0'
+    echo '  3) GPL-3.0-only'
+    echo '  4) Proprietary'
+    read -r -p 'License [1]: ' choice
+
+    case "${choice:-1}" in
+        1)
+            SELECTED_LICENSE='MIT'
+            NPM_LICENSE='MIT'
+            LICENSE_FILE='MIT.md'
+            ;;
+        2)
+            SELECTED_LICENSE='Apache-2.0'
+            NPM_LICENSE='Apache-2.0'
+            LICENSE_FILE='Apache-2.0.md'
+            ;;
+        3)
+            SELECTED_LICENSE='GPL-3.0-only'
+            NPM_LICENSE='GPL-3.0-only'
+            LICENSE_FILE='GPL-3.0-only.md'
+            ;;
+        4)
+            SELECTED_LICENSE='proprietary'
+            NPM_LICENSE='UNLICENSED'
+            LICENSE_FILE='Proprietary.md'
+            ;;
+        *)
+            echo "Error: invalid license selection '$choice'." >&2
+            exit 1
+            ;;
+    esac
+}
+
 if [[ $# -lt 1 || $# -gt 2 ]]; then
     usage
     exit 1
@@ -74,6 +112,7 @@ rsync -a \
     --exclude '/build' \
     --exclude '/composer.lock' \
     --exclude '/create.sh' \
+    --exclude '/licenses' \
     --exclude '/README.md' \
     --exclude '/vendor' \
     --exclude '/npm/vue/node_modules' \
@@ -170,6 +209,63 @@ PHP
 
 mv "$TARGET_DIR/ModuleREADME.md" "$TARGET_DIR/README.md"
 
+choose_license
+cp "$SCRIPT_DIR/licenses/$LICENSE_FILE" "$TARGET_DIR/LICENSE.md"
+
+CREATE_TARGET="$TARGET_DIR" \
+CREATE_LICENSE="$SELECTED_LICENSE" \
+CREATE_NPM_LICENSE="$NPM_LICENSE" \
+CREATE_MODULE_TITLE="$MODULE_TITLE" \
+php <<'PHP'
+<?php
+
+declare(strict_types=1);
+
+$target = getenv('CREATE_TARGET');
+$license = getenv('CREATE_LICENSE');
+$npmLicense = getenv('CREATE_NPM_LICENSE');
+$title = getenv('CREATE_MODULE_TITLE');
+
+if ($target === false || $license === false || $npmLicense === false || $title === false) {
+    throw new RuntimeException('Missing license configuration.');
+}
+
+$packageLicenses = [
+    $target.'/composer.json' => $license,
+    $target.'/npm/vue/package.json' => $npmLicense,
+    $target.'/npm/vue/package-lock.json' => $npmLicense,
+];
+
+foreach ($packageLicenses as $file => $identifier) {
+    $contents = file_get_contents($file);
+
+    if ($contents === false) {
+        throw new RuntimeException("Unable to read {$file}");
+    }
+
+    $updated = preg_replace(
+        '/"license"\s*:\s*"[^"]+"/',
+        '"license": "'.$identifier.'"',
+        $contents,
+        1,
+    );
+
+    if ($updated === null || file_put_contents($file, $updated) === false) {
+        throw new RuntimeException("Unable to update {$file}");
+    }
+}
+
+$licenseText = file_get_contents($target.'/LICENSE.md');
+
+if ($licenseText !== false) {
+    $licenseText = str_replace('Aaa Module Template Zzz', $title, $licenseText);
+}
+
+if ($licenseText === false || file_put_contents($target.'/LICENSE.md', rtrim($licenseText).PHP_EOL) === false) {
+    throw new RuntimeException('Unable to write LICENSE.md');
+}
+PHP
+
 INITIALIZED_GIT=false
 INSTALLED_DEPENDENCIES=false
 
@@ -206,6 +302,7 @@ echo "  scope:     $ORGANIZATION_KEBAB"
 echo "  namespace: $MODULE_PASCAL"
 echo "  title:     $MODULE_TITLE"
 echo "  snake:     $MODULE_SNAKE"
+echo "  license:   $SELECTED_LICENSE"
 
 if [[ "$INITIALIZED_GIT" == true ]]; then
     echo "Initialized Git repository on '$INITIAL_BRANCH' and created initial commit."
