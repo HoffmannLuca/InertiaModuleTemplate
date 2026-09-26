@@ -67,6 +67,7 @@ if [[ $# -lt 1 || $# -gt 2 ]]; then
 fi
 
 readonly MODULE_KEBAB="$1"
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 ORGANIZATION_INPUT="${2:-}"
 
@@ -74,7 +75,7 @@ if [[ -z "$ORGANIZATION_INPUT" ]]; then
     read -r -p 'Organization/scope: ' ORGANIZATION_INPUT
 fi
 
-ORGANIZATION_KEBAB="$(php -r '$value = strtolower(trim($argv[1])); $value = preg_replace("/[^a-z0-9]+/", "-", $value); echo trim($value, "-");' "$ORGANIZATION_INPUT")"
+ORGANIZATION_KEBAB="$(php "$SCRIPT_DIR/create-utils/transform-name.php" organization "$ORGANIZATION_INPUT")"
 
 if [[ "$ORGANIZATION_INPUT" != "$ORGANIZATION_KEBAB" ]]; then
     echo "Warning: organization normalized from '$ORGANIZATION_INPUT' to '$ORGANIZATION_KEBAB'." >&2
@@ -92,13 +93,13 @@ if [[ -z "$ORGANIZATION_KEBAB" || ! "$ORGANIZATION_KEBAB" =~ ^[a-z][a-z0-9]*(-[a
     exit 1
 fi
 
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly BUILD_DIR="$SCRIPT_DIR/build"
 readonly TARGET_DIR="$BUILD_DIR/$MODULE_KEBAB"
 readonly MODULE_SNAKE="${MODULE_KEBAB//-/_}"
-readonly MODULE_PASCAL="$(php -r 'echo str_replace(" ", "", ucwords(str_replace("-", " ", $argv[1])));' "$MODULE_KEBAB")"
-readonly MODULE_TITLE="$(php -r 'echo ucwords(str_replace("-", " ", $argv[1]));' "$MODULE_KEBAB")"
-readonly MODULE_UPPER_SNAKE="$(php -r 'echo strtoupper(str_replace("-", "_", $argv[1]));' "$MODULE_KEBAB")"
+readonly MODULE_PASCAL="$(php "$SCRIPT_DIR/create-utils/transform-name.php" pascal "$MODULE_KEBAB")"
+readonly MODULE_TITLE="$(php "$SCRIPT_DIR/create-utils/transform-name.php" title "$MODULE_KEBAB")"
+readonly MODULE_UPPER_SNAKE="$(php "$SCRIPT_DIR/create-utils/transform-name.php" upper-snake "$MODULE_KEBAB")"
+readonly ORGANIZATION_TITLE="$(php "$SCRIPT_DIR/create-utils/transform-name.php" title "$ORGANIZATION_KEBAB")"
 
 if [[ -e "$TARGET_DIR" ]]; then
     echo "Error: target already exists: $TARGET_DIR" >&2
@@ -111,6 +112,7 @@ rsync -a \
     --exclude '/.git' \
     --exclude '/build' \
     --exclude '/composer.lock' \
+    --exclude '/create-utils' \
     --exclude '/create.sh' \
     --exclude '/licenses' \
     --exclude '/README.md' \
@@ -134,78 +136,7 @@ CREATE_MODULE_SNAKE="$MODULE_SNAKE" \
 CREATE_MODULE_UPPER_SNAKE="$MODULE_UPPER_SNAKE" \
 CREATE_MODULE_PASCAL="$MODULE_PASCAL" \
 CREATE_MODULE_TITLE="$MODULE_TITLE" \
-php <<'PHP'
-<?php
-
-declare(strict_types=1);
-
-$target = requireEnvironmentVariable('CREATE_TARGET');
-$replacements = [
-    requireEnvironmentVariable('CREATE_TEMPLATE_ORGANIZATION') => requireEnvironmentVariable('CREATE_ORGANIZATION'),
-    requireEnvironmentVariable('CREATE_TEMPLATE_PASCAL') => requireEnvironmentVariable('CREATE_MODULE_PASCAL'),
-    requireEnvironmentVariable('CREATE_TEMPLATE_TITLE') => requireEnvironmentVariable('CREATE_MODULE_TITLE'),
-    requireEnvironmentVariable('CREATE_TEMPLATE_UPPER_SNAKE') => requireEnvironmentVariable('CREATE_MODULE_UPPER_SNAKE'),
-    requireEnvironmentVariable('CREATE_TEMPLATE_SNAKE') => requireEnvironmentVariable('CREATE_MODULE_SNAKE'),
-    requireEnvironmentVariable('CREATE_TEMPLATE_KEBAB') => requireEnvironmentVariable('CREATE_MODULE_KEBAB'),
-];
-
-$files = new RecursiveIteratorIterator(
-    new RecursiveDirectoryIterator($target, FilesystemIterator::SKIP_DOTS),
-);
-
-foreach ($files as $file) {
-    if (! $file->isFile()) {
-        continue;
-    }
-
-    $contents = file_get_contents($file->getPathname());
-
-    if ($contents === false) {
-        throw new RuntimeException("Unable to read {$file->getPathname()}");
-    }
-
-    if (str_contains($contents, "\0")) {
-        continue;
-    }
-
-    $updated = str_replace(array_keys($replacements), array_values($replacements), $contents);
-
-    if ($updated !== $contents && file_put_contents($file->getPathname(), $updated) === false) {
-        throw new RuntimeException("Unable to write {$file->getPathname()}");
-    }
-}
-
-$paths = new RecursiveIteratorIterator(
-    new RecursiveDirectoryIterator($target, FilesystemIterator::SKIP_DOTS),
-    RecursiveIteratorIterator::CHILD_FIRST,
-);
-
-foreach ($paths as $path) {
-    $oldPath = $path->getPathname();
-    $newName = str_replace(array_keys($replacements), array_values($replacements), $path->getBasename());
-
-    if ($newName === $path->getBasename()) {
-        continue;
-    }
-
-    $newPath = $path->getPath().DIRECTORY_SEPARATOR.$newName;
-
-    if (! rename($oldPath, $newPath)) {
-        throw new RuntimeException("Unable to rename {$oldPath} to {$newPath}");
-    }
-}
-
-function requireEnvironmentVariable(string $name): string
-{
-    $value = getenv($name);
-
-    if ($value === false || $value === '') {
-        throw new RuntimeException("Missing environment variable: {$name}");
-    }
-
-    return $value;
-}
-PHP
+php "$SCRIPT_DIR/create-utils/replace-template.php"
 
 mv "$TARGET_DIR/ModuleREADME.md" "$TARGET_DIR/README.md"
 
@@ -215,56 +146,8 @@ cp "$SCRIPT_DIR/licenses/$LICENSE_FILE" "$TARGET_DIR/LICENSE.md"
 CREATE_TARGET="$TARGET_DIR" \
 CREATE_LICENSE="$SELECTED_LICENSE" \
 CREATE_NPM_LICENSE="$NPM_LICENSE" \
-CREATE_MODULE_TITLE="$MODULE_TITLE" \
-php <<'PHP'
-<?php
-
-declare(strict_types=1);
-
-$target = getenv('CREATE_TARGET');
-$license = getenv('CREATE_LICENSE');
-$npmLicense = getenv('CREATE_NPM_LICENSE');
-$title = getenv('CREATE_MODULE_TITLE');
-
-if ($target === false || $license === false || $npmLicense === false || $title === false) {
-    throw new RuntimeException('Missing license configuration.');
-}
-
-$packageLicenses = [
-    $target.'/composer.json' => $license,
-    $target.'/npm/vue/package.json' => $npmLicense,
-    $target.'/npm/vue/package-lock.json' => $npmLicense,
-];
-
-foreach ($packageLicenses as $file => $identifier) {
-    $contents = file_get_contents($file);
-
-    if ($contents === false) {
-        throw new RuntimeException("Unable to read {$file}");
-    }
-
-    $updated = preg_replace(
-        '/"license"\s*:\s*"[^"]+"/',
-        '"license": "'.$identifier.'"',
-        $contents,
-        1,
-    );
-
-    if ($updated === null || file_put_contents($file, $updated) === false) {
-        throw new RuntimeException("Unable to update {$file}");
-    }
-}
-
-$licenseText = file_get_contents($target.'/LICENSE.md');
-
-if ($licenseText !== false) {
-    $licenseText = str_replace('Aaa Module Template Zzz', $title, $licenseText);
-}
-
-if ($licenseText === false || file_put_contents($target.'/LICENSE.md', rtrim($licenseText).PHP_EOL) === false) {
-    throw new RuntimeException('Unable to write LICENSE.md');
-}
-PHP
+CREATE_ORGANIZATION_TITLE="$ORGANIZATION_TITLE" \
+php "$SCRIPT_DIR/create-utils/apply-license.php"
 
 INITIALIZED_GIT=false
 INSTALLED_DEPENDENCIES=false

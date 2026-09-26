@@ -1,6 +1,6 @@
 # Proprietary License
 
-Copyright Aaa Module Template Zzz. All rights reserved.
+Copyright Aaa Organization Zzz. All rights reserved.
 
 This software and its source code are proprietary and confidential. No right to
 use, copy, modify, distribute, sublicense, or sell this software is granted

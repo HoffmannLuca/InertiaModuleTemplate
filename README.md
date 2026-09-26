@@ -51,7 +51,12 @@ Before the optional Git and installation steps, the generator asks for a
 license. Enter selects the default `1) MIT`; Apache-2.0, GPL-3.0-only, and a
 proprietary package are also available. The choice updates `LICENSE.md` and the
 Composer/npm package metadata. License templates live in `licenses/`; that
-directory itself is not copied into generated modules.
+directory itself is not copied into generated modules. Copyright notices use
+the selected Organization as their holder.
+
+The generator's PHP helpers live in `create-utils/`. They handle name
+transformations, recursive placeholder replacement, file renaming, and license
+metadata. This utility directory is not copied into generated modules.
 
 ## Backend installation
 

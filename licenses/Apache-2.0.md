@@ -1,6 +1,6 @@
 # Apache License 2.0
 
-Copyright Aaa Module Template Zzz contributors
+Copyright Aaa Organization Zzz contributors
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License. You may obtain a copy at

@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) Aaa Module Template Zzz contributors
+Copyright (c) Aaa Organization Zzz contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
