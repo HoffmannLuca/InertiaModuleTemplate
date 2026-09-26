@@ -37,12 +37,12 @@ generated frontend files, and the template's `composer.lock` are not copied.
 Instead, `ModuleREADME.md` is processed and renamed to `README.md` in the
 generated module. The generated directory is initialized as a fresh Git
 repository only after interactive confirmation. If confirmed, it uses the
-user's configured default branch and commits all generated files as
-`Initial commit`. A second prompt controls whether Composer dependencies and
-the dependencies in `npm/vue` are installed. When both options are selected,
-generated lock-file changes are added to the initial commit so that the new
-repository finishes clean. Pressing Enter accepts the default `yes`; `n` or
-`no` skips an option.
+user's configured default branch, falling back to `feature/initial-module`, and
+commits all generated files as `Initial commit`. A second prompt controls
+whether Composer dependencies and the dependencies in `npm/vue` are installed.
+When both options are selected, generated lock-file changes are added to the
+initial commit so that the new repository finishes clean. Pressing Enter
+accepts the default `yes`; `n` or `no` skips an option.
 
 Organization input is normalized to a lowercase kebab-case scope. For example,
 `Acme GmbH` is accepted with a warning and used as `acme-gmbh`.

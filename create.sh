@@ -174,7 +174,13 @@ INITIALIZED_GIT=false
 INSTALLED_DEPENDENCIES=false
 
 if confirm 'Initialize a Git repository and create an initial commit?'; then
-    git -C "$TARGET_DIR" init
+    INITIAL_BRANCH="$(git config --get init.defaultBranch || true)"
+
+    if [[ -z "$INITIAL_BRANCH" ]]; then
+        INITIAL_BRANCH='main'
+    fi
+
+    git -C "$TARGET_DIR" init --initial-branch="$INITIAL_BRANCH"
     git -C "$TARGET_DIR" add .
     git -C "$TARGET_DIR" commit --no-gpg-sign -m 'Initial commit'
     INITIALIZED_GIT=true
@@ -202,7 +208,7 @@ echo "  title:     $MODULE_TITLE"
 echo "  snake:     $MODULE_SNAKE"
 
 if [[ "$INITIALIZED_GIT" == true ]]; then
-    echo 'Initialized Git repository and created initial commit.'
+    echo "Initialized Git repository on '$INITIAL_BRANCH' and created initial commit."
 fi
 
 if [[ "$INSTALLED_DEPENDENCIES" == true ]]; then
