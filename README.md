@@ -31,9 +31,11 @@ asks for it interactively. This creates `build/customer-portal`, uses
 and replaces all occurrences and file
 names using `customer-portal`, `customer_portal`, and `CustomerPortal`. Existing
 human-readable names become `Customer Portal` and environment-variable prefixes
-become `CUSTOMER_PORTAL`. Existing targets are never overwritten. Installed
-dependencies, Git metadata, generated
-frontend files, and the template's `composer.lock` are not copied. Run
+become `CUSTOMER_PORTAL`. Existing targets are never overwritten. The generator
+itself, this repository's `README.md`, installed dependencies, Git metadata,
+generated frontend files, and the template's `composer.lock` are not copied.
+Instead, `ModuleREADME.md` is processed and renamed to `README.md` in the
+generated module. Run
 `composer install` in the generated package to create its own valid lock file.
 
 Organization input is normalized to a lowercase kebab-case scope. For example,

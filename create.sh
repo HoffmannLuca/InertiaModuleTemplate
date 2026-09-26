@@ -64,6 +64,8 @@ rsync -a \
     --exclude '/.git' \
     --exclude '/build' \
     --exclude '/composer.lock' \
+    --exclude '/create.sh' \
+    --exclude '/README.md' \
     --exclude '/vendor' \
     --exclude '/npm/vue/node_modules' \
     --exclude '/npm/vue/dist' \
@@ -156,6 +158,8 @@ function requireEnvironmentVariable(string $name): string
     return $value;
 }
 PHP
+
+mv "$TARGET_DIR/ModuleREADME.md" "$TARGET_DIR/README.md"
 
 echo "Created module template: $TARGET_DIR"
 echo "  slug:      $MODULE_KEBAB"
