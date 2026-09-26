@@ -11,20 +11,24 @@ Replace the placeholders consistently when creating a module:
 
 | Context | Placeholder |
 | --- | --- |
+| Composer/npm organization | `aaa-organization-zzz` |
 | Composer/package slug | `aaa-module-template-zzz` |
 | PHP namespace/classes | `AaaModuleTemplateZzz` |
 | Human-readable name | `Aaa Module Template Zzz` |
 | Config/database keys | `aaa_module_template_zzz` |
 | Environment variables | `AAA_MODULE_TEMPLATE_ZZZ` |
-| npm package | `@aaa-module-template-zzz/vue` |
+| npm package | `@aaa-organization-zzz/aaa-module-template-zzz-vue` |
 
 Create a renamed copy in `build/` with:
 
 ```bash
-./create.sh customer-portal
+./create.sh customer-portal acme
 ```
 
-This creates `build/customer-portal` and replaces all occurrences and file
+The organization can be passed as the second argument. If omitted, the script
+asks for it interactively. This creates `build/customer-portal`, uses
+`acme/customer-portal` for Composer and `@acme/customer-portal-vue` for npm,
+and replaces all occurrences and file
 names using `customer-portal`, `customer_portal`, and `CustomerPortal`. Existing
 human-readable names become `Customer Portal` and environment-variable prefixes
 become `CUSTOMER_PORTAL`. Existing targets are never overwritten. Installed
@@ -35,7 +39,7 @@ frontend files, and the template's `composer.lock` are not copied. Run
 ## Backend installation
 
 ```bash
-composer require aaa-module-template-zzz/aaa-module-template-zzz
+composer require aaa-organization-zzz/aaa-module-template-zzz
 php artisan migrate
 ```
 
@@ -71,7 +75,7 @@ The frontend package is independent from Composer and must be published and
 installed separately:
 
 ```bash
-npm install @aaa-module-template-zzz/vue
+npm install @aaa-organization-zzz/aaa-module-template-zzz-vue
 ```
 
 Use the headless composable in any Vue or Inertia Vue component:
@@ -79,7 +83,7 @@ Use the headless composable in any Vue or Inertia Vue component:
 ```vue
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { useAaaModuleTemplateZzz } from '@aaa-module-template-zzz/vue'
+import { useAaaModuleTemplateZzz } from '@aaa-organization-zzz/aaa-module-template-zzz-vue'
 
 const { data, error, loading, fetchStatus } = useAaaModuleTemplateZzz()
 

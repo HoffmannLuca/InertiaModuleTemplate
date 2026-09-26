@@ -1,5 +1,5 @@
 {
-  "name": "@aaa-module-template-zzz/vue",
+  "name": "@aaa-organization-zzz/aaa-module-template-zzz-vue",
   "version": "0.1.0",
   "description": "Headless Vue composables for aaa-module-template-zzz.",
   "license": "MIT",

@@ -1,5 +1,5 @@
 {
-    "name": "aaa-module-template-zzz/aaa-module-template-zzz",
+    "name": "aaa-organization-zzz/aaa-module-template-zzz",
     "description": "Template for a Laravel module with a separately distributed headless Inertia Vue package.",
     "type": "library",
     "license": "MIT",

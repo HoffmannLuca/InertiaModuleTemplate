@@ -3,25 +3,39 @@
 set -euo pipefail
 
 readonly TEMPLATE_KEBAB='aaa-module-template-zzz'
+readonly TEMPLATE_ORGANIZATION='aaa-organization-zzz'
 readonly TEMPLATE_SNAKE='aaa_module_template_zzz'
 readonly TEMPLATE_UPPER_SNAKE='AAA_MODULE_TEMPLATE_ZZZ'
 readonly TEMPLATE_PASCAL='AaaModuleTemplateZzz'
 readonly TEMPLATE_TITLE='Aaa Module Template Zzz'
 
 usage() {
-    echo "Usage: ./create.sh <module-name>" >&2
-    echo "Example: ./create.sh customer-portal" >&2
+    echo "Usage: ./create.sh <module-name> [organization]" >&2
+    echo "Example: ./create.sh customer-portal acme" >&2
 }
 
-if [[ $# -ne 1 ]]; then
+if [[ $# -lt 1 || $# -gt 2 ]]; then
     usage
     exit 1
 fi
 
 readonly MODULE_KEBAB="$1"
 
+ORGANIZATION_KEBAB="${2:-}"
+
+if [[ -z "$ORGANIZATION_KEBAB" ]]; then
+    read -r -p 'Organization/scope: ' ORGANIZATION_KEBAB
+fi
+
+readonly ORGANIZATION_KEBAB
+
 if [[ ! "$MODULE_KEBAB" =~ ^[a-z][a-z0-9]*(-[a-z0-9]+)*$ ]]; then
     echo 'Error: module-name must be a lowercase kebab-case slug.' >&2
+    exit 1
+fi
+
+if [[ ! "$ORGANIZATION_KEBAB" =~ ^[a-z][a-z0-9]*(-[a-z0-9]+)*$ ]]; then
+    echo 'Error: organization must be a lowercase kebab-case slug.' >&2
     exit 1
 fi
 
@@ -53,11 +67,13 @@ rsync -a \
 
 CREATE_TARGET="$TARGET_DIR" \
 CREATE_TEMPLATE_KEBAB="$TEMPLATE_KEBAB" \
+CREATE_TEMPLATE_ORGANIZATION="$TEMPLATE_ORGANIZATION" \
 CREATE_TEMPLATE_SNAKE="$TEMPLATE_SNAKE" \
 CREATE_TEMPLATE_UPPER_SNAKE="$TEMPLATE_UPPER_SNAKE" \
 CREATE_TEMPLATE_PASCAL="$TEMPLATE_PASCAL" \
 CREATE_TEMPLATE_TITLE="$TEMPLATE_TITLE" \
 CREATE_MODULE_KEBAB="$MODULE_KEBAB" \
+CREATE_ORGANIZATION="$ORGANIZATION_KEBAB" \
 CREATE_MODULE_SNAKE="$MODULE_SNAKE" \
 CREATE_MODULE_UPPER_SNAKE="$MODULE_UPPER_SNAKE" \
 CREATE_MODULE_PASCAL="$MODULE_PASCAL" \
@@ -69,6 +85,7 @@ declare(strict_types=1);
 
 $target = requireEnvironmentVariable('CREATE_TARGET');
 $replacements = [
+    requireEnvironmentVariable('CREATE_TEMPLATE_ORGANIZATION') => requireEnvironmentVariable('CREATE_ORGANIZATION'),
     requireEnvironmentVariable('CREATE_TEMPLATE_PASCAL') => requireEnvironmentVariable('CREATE_MODULE_PASCAL'),
     requireEnvironmentVariable('CREATE_TEMPLATE_TITLE') => requireEnvironmentVariable('CREATE_MODULE_TITLE'),
     requireEnvironmentVariable('CREATE_TEMPLATE_UPPER_SNAKE') => requireEnvironmentVariable('CREATE_MODULE_UPPER_SNAKE'),
@@ -136,6 +153,7 @@ PHP
 
 echo "Created module template: $TARGET_DIR"
 echo "  slug:      $MODULE_KEBAB"
+echo "  scope:     $ORGANIZATION_KEBAB"
 echo "  namespace: $MODULE_PASCAL"
 echo "  title:     $MODULE_TITLE"
 echo "  snake:     $MODULE_SNAKE"
