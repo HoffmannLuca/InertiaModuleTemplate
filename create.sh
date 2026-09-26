@@ -69,7 +69,13 @@ fi
 readonly MODULE_KEBAB="$1"
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-ORGANIZATION_INPUT="${2:-}"
+DEFAULT_ORGANISATION_VALUE="${DEFAULT_ORGANISATION:-}"
+
+if [[ -z "$DEFAULT_ORGANISATION_VALUE" && -f "$SCRIPT_DIR/.env" ]]; then
+    DEFAULT_ORGANISATION_VALUE="$(php "$SCRIPT_DIR/create-utils/read-env.php" "$SCRIPT_DIR/.env" DEFAULT_ORGANISATION)"
+fi
+
+ORGANIZATION_INPUT="${2:-$DEFAULT_ORGANISATION_VALUE}"
 
 if [[ -z "$ORGANIZATION_INPUT" ]]; then
     read -r -p 'Organization/scope: ' ORGANIZATION_INPUT
@@ -110,6 +116,8 @@ mkdir -p "$BUILD_DIR"
 
 rsync -a \
     --exclude '/.git' \
+    --exclude '/.env' \
+    --exclude '/.env.example' \
     --exclude '/build' \
     --exclude '/composer.lock' \
     --exclude '/create-utils' \

@@ -26,7 +26,25 @@ Create a renamed copy in `build/` with:
 ```
 
 The organization can be passed as the second argument. If omitted, the script
-asks for it interactively. This creates `build/customer-portal`, uses
+uses `DEFAULT_ORGANISATION` from the environment when available and otherwise
+asks for it interactively:
+
+```bash
+DEFAULT_ORGANISATION=acme ./create.sh customer-portal
+```
+
+It can also be stored locally:
+
+```bash
+cp .env.example .env
+# Set DEFAULT_ORGANISATION=acme in .env
+./create.sh customer-portal
+```
+
+The `.env` file is ignored by Git and is never copied into generated modules.
+An explicit second argument takes precedence over the process environment,
+which takes precedence over `.env`.
+The command creates `build/customer-portal`, uses
 `acme/customer-portal` for Composer and `@acme/customer-portal-vue` for npm,
 and replaces all occurrences and file
 names using `customer-portal`, `customer_portal`, and `CustomerPortal`. Existing
