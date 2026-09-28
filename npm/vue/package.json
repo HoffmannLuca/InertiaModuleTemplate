@@ -40,6 +40,7 @@
   },
   "peerDependencies": {
     "@inertiajs/vue3": "^3.0.0",
+    "@starter-solutions/vue-ui": "^0.1.4",
     "vue": "^3.4.0"
   },
   "dependencies": {
@@ -47,6 +48,7 @@
   },
   "devDependencies": {
     "@inertiajs/vue3": "^3.0.0",
+    "@starter-solutions/vue-ui": "^0.1.4",
     "@types/node": "^22.10.0",
     "@vue/tsconfig": "^0.7.0",
     "tsup": "^8.3.5",

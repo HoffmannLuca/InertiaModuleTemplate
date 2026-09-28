@@ -42,6 +42,13 @@ The frontend package is distributed as ESM-only.
 npm install @aaa-organization-zzz/aaa-module-template-zzz-vue
 ```
 
+The bundled pages use `@starter-solutions/vue-ui`. Install it in the consuming
+application and import its stylesheet once in the application CSS entry:
+
+```css
+@import '@starter-solutions/vue-ui/styles.css';
+```
+
 Use the headless composable from a Vue or Inertia Vue component:
 
 ```vue

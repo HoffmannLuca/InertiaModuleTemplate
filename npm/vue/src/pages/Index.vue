@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3'
+import { Button } from '@starter-solutions/vue-ui/base/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@starter-solutions/vue-ui/base/card'
 
 import { TestEnum, type Test } from '../generated/backend';
 
@@ -19,9 +21,19 @@ defineProps<Props>()
 </script>
 
 <template>
-  <main>
-    <h1>{{ module.name }}</h1>
-    <p>The Inertia module page was loaded from the module's npm package.</p>
-    <Link :href="testsUrl">Open example CRUD</Link>
+  <main class="mx-auto max-w-3xl p-6">
+    <Card>
+      <CardHeader>
+        <CardTitle>{{ module.name }}</CardTitle>
+        <CardDescription>
+          The Inertia module page was loaded from the module's npm package.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Button as-child>
+          <Link :href="testsUrl">Open example CRUD</Link>
+        </Button>
+      </CardContent>
+    </Card>
   </main>
 </template>

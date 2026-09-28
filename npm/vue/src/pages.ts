@@ -4,8 +4,6 @@ export const pages = {
   'AaaModuleTemplateZzz/Index': () => import('./pages/Index.vue'),
   'AaaModuleTemplateZzz/Tests/Edit': () => import('./pages/Tests/Edit.vue'),
   'AaaModuleTemplateZzz/Tests/Index': () => import('./pages/Tests/Index.vue'),
-  'AaaModuleTemplateZzz/orders/Edit': () => import('./pages/orders/Edit.vue'),
-  'AaaModuleTemplateZzz/orders/Index': () => import('./pages/orders/Index.vue'),
 } as const
 
 export type ModulePageName = keyof typeof pages
