@@ -13,6 +13,7 @@ class PageController
             'module' => [
                 'name' => 'aaa-module-template-zzz',
             ],
+            'testsUrl' => route('aaa-module-template-zzz.web.tests.index'),
         ]);
     }
 }
