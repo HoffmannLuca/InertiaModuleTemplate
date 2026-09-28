@@ -3,7 +3,12 @@ export interface ModuleStatus {
   status: string
 }
 
-export type {
-  ModuleClientOptions,
-  ModuleResponse,
-} from '@starter-solutions/inertia-module-utils'
+export interface ModuleResponse<T> {
+  data: T
+}
+
+export interface ModuleClientOptions {
+  baseUrl?: string
+  fetch?: typeof globalThis.fetch
+  headers?: HeadersInit
+}

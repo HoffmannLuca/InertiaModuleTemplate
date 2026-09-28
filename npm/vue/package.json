@@ -43,10 +43,8 @@
     "@starter-solutions/vue-ui": "^0.1.4",
     "vue": "^3.4.0"
   },
-  "dependencies": {
-    "@starter-solutions/inertia-module-utils": "file:../module-utils"
-  },
   "devDependencies": {
+    "@starter-solutions/inertia-module-utils": "file:../module-utils",
     "@inertiajs/vue3": "^3.0.0",
     "@starter-solutions/vue-ui": "^0.1.4",
     "@types/node": "^22.10.0",
