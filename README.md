@@ -136,13 +136,20 @@ The consuming application installs the Vite plugin once:
 import { inertiaModules } from '@starter-solutions/vite-plugin-inertia-modules'
 
 export default defineConfig({
-  plugins: [laravel(/* ... */), vue(), inertiaModules()],
+  plugins: [laravel(/* ... */), inertiaModules(), inertia(), vue()],
 })
 ```
 
-Its Inertia bootstrap can then combine module pages with its local fallback:
+The plugin automatically adds the combined module and host-page resolver to an
+existing `createInertiaApp({ ... })` call. No application bootstrap changes are
+required. Applications with a custom resolver can opt out and use the virtual
+module explicitly:
 
 ```ts
+// vite.config.ts
+inertiaModules({ autoResolve: false })
+
+// app.ts
 import { createInertiaPageResolver } from 'virtual:inertia-module-pages'
 
 const resolve = createInertiaPageResolver({
