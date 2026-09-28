@@ -76,6 +76,83 @@ The generator's PHP helpers live in `create-utils/`. They handle name
 transformations, recursive placeholder replacement, file renaming, and license
 metadata. This utility directory is not copied into generated modules.
 
+## Shared npm tooling
+
+The repository also owns two reusable npm packages under `npm/`. They are
+tracked once in this template repository and are explicitly excluded by
+`create.sh` when a new module repository is generated:
+
+- `@starter-solutions/inertia-module-utils` generates a module's Inertia page
+  registry and TypeScript definitions for PHP enums and constructor-promoted
+  data objects.
+- `@starter-solutions/vite-plugin-inertia-modules` discovers installed module
+  frontend packages and exposes their pages through
+  `virtual:inertia-module-pages`.
+
+Both packages are also covered by the root `/npm export-ignore` rule and are
+therefore not included in the Composer/Packagist archive.
+All frontend and tooling packages are ESM-only.
+
+Develop and test the shared packages with:
+
+```bash
+npm --prefix npm/module-utils test
+npm --prefix npm/vite-plugin-inertia-modules test
+```
+
+The utility package expects an `inertia-module.config.mjs` in a module frontend
+package. A minimal configuration is:
+
+```js
+export default {
+  namespace: 'AaaModuleTemplateZzz',
+  pagesDir: 'src/pages',
+  pagesFile: 'src/pages.ts',
+  phpDir: '../..',
+  phpSources: ['src/Enums', 'src/Data'],
+  backendTypesFile: 'src/generated/backend.ts',
+  enumSuffix: 'Enum',
+}
+```
+
+Run `inertia-module generate` to write the generated files or
+`inertia-module generate --check` in CI. An installed module frontend package
+advertises its generated pages to the Vite plugin through package metadata:
+
+```json
+{
+  "inertiaModule": {
+    "pageExport": "./pages"
+  },
+  "exports": {
+    "./pages": "./dist/pages.js"
+  }
+}
+```
+
+The consuming application installs the Vite plugin once:
+
+```ts
+import { inertiaModules } from '@starter-solutions/vite-plugin-inertia-modules'
+
+export default defineConfig({
+  plugins: [laravel(/* ... */), vue(), inertiaModules()],
+})
+```
+
+Its Inertia bootstrap can then combine module pages with its local fallback:
+
+```ts
+import { createInertiaPageResolver } from 'virtual:inertia-module-pages'
+
+const resolve = createInertiaPageResolver({
+  fallback: (name) => resolvePageComponent(
+    `./Pages/${name}.vue`,
+    import.meta.glob('./Pages/**/*.vue'),
+  ),
+})
+```
+
 ## Backend installation
 
 ```bash
@@ -111,8 +188,8 @@ of modifying the existing file.
 
 ## Frontend installation
 
-The frontend package is independent from Composer and must be published and
-installed separately:
+The frontend package is independent from Composer, distributed as ESM-only,
+and must be published and installed separately:
 
 ```bash
 npm install @aaa-organization-zzz/aaa-module-template-zzz-vue

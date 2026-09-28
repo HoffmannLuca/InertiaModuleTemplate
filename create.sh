@@ -125,6 +125,8 @@ rsync -a \
     --exclude '/licenses' \
     --exclude '/README.md' \
     --exclude '/vendor' \
+    --exclude '/npm/module-utils' \
+    --exclude '/npm/vite-plugin-inertia-modules' \
     --exclude '/npm/vue/node_modules' \
     --exclude '/npm/vue/dist' \
     --exclude '/.phpunit.cache' \

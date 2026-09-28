@@ -1,0 +1,31 @@
+{
+  "name": "@starter-solutions/inertia-module-utils",
+  "version": "0.1.0",
+  "description": "Generators and shared utilities for Laravel Inertia modules.",
+  "license": "MIT",
+  "type": "module",
+  "types": "./src/index.d.ts",
+  "files": [
+    "bin",
+    "src"
+  ],
+  "bin": {
+    "inertia-module": "./bin/inertia-module.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js"
+    },
+    "./generator": "./src/generator.js"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
