@@ -6,27 +6,47 @@
   "type": "module",
   "sideEffects": false,
   "files": [
-    "dist"
+    "dist",
+    "src/generated",
+    "src/pages",
+    "src/pages.ts"
   ],
-  "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": "./dist/index.js"
+    },
+    "./pages": {
+      "types": "./src/pages.ts",
+      "import": "./src/pages.ts"
+    },
+    "./backend": {
+      "types": "./src/generated/backend.ts",
+      "import": "./src/generated/backend.ts"
     }
   },
+  "inertiaModule": {
+    "pageExport": "./pages"
+  },
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "generate": "inertia-module generate",
+    "generate:check": "inertia-module generate --check",
+    "build": "tsup src/index.ts --format esm --dts --clean",
+    "prepack": "npm run generate",
     "typecheck": "vue-tsc --noEmit",
     "test": "vitest run"
   },
   "peerDependencies": {
+    "@inertiajs/vue3": "^3.0.0",
     "vue": "^3.4.0"
   },
+  "dependencies": {
+    "@starter-solutions/inertia-module-utils": "file:../module-utils"
+  },
   "devDependencies": {
+    "@inertiajs/vue3": "^3.0.0",
     "@types/node": "^22.10.0",
     "@vue/tsconfig": "^0.7.0",
     "tsup": "^8.3.5",

@@ -28,12 +28,15 @@ GET /api/aaa-module-template-zzz/status
 GET /aaa-module-template-zzz
 ```
 
-The web route renders the Inertia component `AaaModuleTemplateZzz/Index`.
-Register this component name in the consuming application's Inertia page
-resolver. API and web routes can be configured or disabled independently in
-`config/aaa_module_template_zzz.php`.
+The web route renders the Inertia component `AaaModuleTemplateZzz/Index`. The
+frontend package exposes this page through its generated `./pages` export,
+which can be discovered by
+`@starter-solutions/vite-plugin-inertia-modules`. API and web routes can be
+configured or disabled independently in `config/aaa_module_template_zzz.php`.
 
 ## Frontend installation
+
+The frontend package is distributed as ESM-only.
 
 ```bash
 npm install @aaa-organization-zzz/aaa-module-template-zzz-vue
@@ -71,6 +74,18 @@ npm run typecheck
 npm test
 npm run build
 ```
+
+Vue files below `src/pages` are registered automatically. Regenerate the page
+registry and backend TypeScript declarations after adding pages, PHP backed
+enums, or constructor-promoted data objects:
+
+```bash
+npm run generate
+npm run generate:check
+```
+
+Generated PHP declarations can be imported from the package's `./backend`
+subpath, while the generated page registry is exposed through `./pages`.
 
 Committed migrations are immutable. Add a new migration for every subsequent
 schema change instead of modifying an existing migration.
